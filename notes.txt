@@ -1,0 +1,5 @@
+docker build -t llm-rag-arm64-test .
+docker run --rm -v $(pwd)/docs:/app/docs llm-rag-arm64-test python -u services/document_processor.py
+docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant
+--
+docker-compose up --build

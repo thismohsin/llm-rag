@@ -1,0 +1,33 @@
+[
+  {
+    "question": "How do I list files in Linux?",
+    "answer": "You can use the 'ls' command to list files in Linux.",
+    "source": "linux.txt"
+  },
+  {
+    "question": "What command is used to change directories in Linux?",
+    "answer": "The 'cd' command is used to change directories in Linux.",
+    "source": "linux.txt"
+  },
+  {
+    "question": "Where are system logs typically stored in Linux?",
+    "answer": "System logs are typically stored in the '/var/log/' directory.",
+    "source": "linux.txt"
+  },
+  {
+    "question": "How do I initialize a new Git repository?",
+    "answer": "Use the 'git init' command to initialize a new Git repository.",
+    "source": "git.txt"
+  },
+  {
+    "question": "What Git command is used to switch between branches?",
+    "answer": "The 'git checkout' command is used to switch between branches.",
+    "source": "git.txt"
+  },
+  {
+    "question": "How do I resolve merge conflicts in Git?",
+    "answer": "To resolve merge conflicts, edit the conflicted files, add them, and then commit.",
+    "source": "git.txt"
+  }
+]
+

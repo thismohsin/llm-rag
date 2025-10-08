@@ -1,0 +1,17 @@
+Git is a distributed version control system used to track changes in source code.
+The most common Git workflow includes the following commands:
+
+- `git init`: Initialize a new Git repository
+- `git clone`: Copy a repository from remote to local machine
+- `git add`: Stage changes for commit
+- `git commit`: Save changes to local repository
+- `git push`: Upload local commits to remote repository
+- `git pull`: Download changes from remote repository
+
+Branching is a key Git feature:
+- `git branch`: List, create, or delete branches
+- `git checkout`: Switch between branches
+- `git merge`: Combine changes from different branches
+
+To resolve merge conflicts, edit the conflicted files, add them, and then commit.
+Git stash allows you to temporarily store uncommitted changes when you need to switch contexts.

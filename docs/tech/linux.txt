@@ -1,0 +1,8 @@
+Linux provides powerful command-line tools for system administration and development.
+Common commands include 'ls' to list files, 'cd' to change directories, and 'mkdir' to create folders.
+Permissions can be modified using the 'chmod' command, with options for read (r), write (w), and execute (x).
+Process management is handled via commands like 'ps', 'top', and 'kill'.
+The pipe operator '|' allows chaining commands together by passing output from one command as input to another.
+Package management varies by distribution: 'apt' for Ubuntu/Debian, 'yum'/'dnf' for RedHat/CentOS, and 'pacman' for Arch Linux.
+System logs are typically stored in the '/var/log/' directory and can be viewed with tools like 'less' or 'tail'.
+
