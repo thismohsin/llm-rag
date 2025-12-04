@@ -11,7 +11,6 @@ from lightweight_embedder import LightweightEmbedder
 from vector_store import QdrantVectorStore
 from rag_evaluator import RAGEvaluator
 import time
-from qdrant_client.http.exceptions import ResponseHandlingException
 
 class OllamaLLM:
     """Simple Ollama client for generating answers."""
@@ -123,12 +122,14 @@ class RAGPipeline:
 
     def setup_and_index_documents(self):
         """Load and index documents."""
-        print("\n1. Loading and indexing documents...")
+        print("\n" + "="*50)
+        print("📄 1. Loading and Indexing Documents")
+        print("="*50)
         docs = self.processor.load_text_documents(subdirs=["tech"])
-        print(f"Loaded {len(docs)} documents")
+        print(f"  • Loaded {len(docs)} documents")
 
         # Wait for Qdrant to be ready
-        print("Waiting for Qdrant to be ready...")
+        print("  ⏳ Waiting for Qdrant to be ready...")
         time.sleep(3)
 
         # Index documents
@@ -136,27 +137,31 @@ class RAGPipeline:
         embeddings = self.embedder.embed(texts)
         payloads = [{"text": doc["content"], "source": doc["metadata"].get("source")} for doc in docs]
         self.vector_store.upsert(embeddings, payloads)
-        print(f"Indexed {len(docs)} documents in Qdrant")
+        print(f"  • Indexed {len(docs)} documents in Qdrant")
 
         return docs
 
     def initialize_ollama(self):
         """Initialize and test Ollama connection."""
-        print("\n2. Initializing Ollama...")
+        print("\n" + "="*50)
+        print("🤖 2. Initializing Ollama")
+        print("="*50)
 
         # Wait for the model to be available
         if not self.llm.wait_for_model():
-            print("Could not connect to Ollama or model not available. Exiting...")
+            print("❌ Could not connect to Ollama or model not available. Exiting...")
             return False
 
         # Test Ollama connection
         test_response = self.llm.generate("Hello, respond with 'Ollama is working!'")
-        print(f"Ollama test response: {test_response}")
+        print(f"  • Ollama test response: {test_response}")
         return True
 
     def test_rag_pipeline(self):
         """Test the RAG pipeline with sample questions."""
-        print("\n3. Testing complete RAG pipeline...")
+        print("\n" + "="*50)
+        print("🧪 3. Testing Complete RAG Pipeline")
+        print("="*50)
 
         test_questions = [
             "How do I list files in Linux?",
@@ -168,22 +173,20 @@ class RAGPipeline:
 
         for i, question in enumerate(test_questions):
             print(f"\n--- Question {i+1}: {question} ---")
-
-            # Step 1: Retrieve relevant contexts using evaluator's method
-            print("Retrieving contexts...")
+            print("  🔍 Retrieving contexts...")
             contexts = self.evaluator.retrieve_context(question, top_k=2)
 
-            print(f"Found {len(contexts)} relevant contexts:")
+            print(f"  • Found {len(contexts)} relevant contexts:")
             for j, context in enumerate(contexts):
-                print(f"Context {j+1}: {context[:100]}...")
+                print(f"    Context {j+1}: {context[:100]}...")
 
-            # Step 2: Generate answer using Ollama
-            print("Generating answer with Ollama...")
+            print("  💡 Generating answer with Ollama...")
             rag_prompt = create_rag_prompt(question, contexts)
             generated_answer = self.llm.generate(rag_prompt)
 
-            print(f"Generated Answer: {generated_answer}")
-            print("-" * 50)
+            print("  📝 Generated Answer:")
+            print(f"    {generated_answer}")
+            print("  " + "-" * 40)
 
             generated_answers.append(generated_answer)
 
@@ -191,7 +194,9 @@ class RAGPipeline:
 
     def run_evaluation(self, questions: list, answers: list):
         """Run RAGAS evaluation using the integrated evaluator."""
-        print("\n4. Running RAGAS evaluation...")
+        print("\n" + "="*50)
+        print("📊 4. Running RAGAS Evaluation")
+        print("="*50)
 
         try:
             results = self.evaluator.evaluate(
@@ -202,13 +207,15 @@ class RAGPipeline:
             self.evaluator.print_results(results)
             return results
         except Exception as e:
-            print(f"RAGAS evaluation failed: {str(e)}")
-            print("Continuing with simple ground truth comparison...")
+            print(f"❌ RAGAS evaluation failed: {str(e)}")
+            print("⚠️ Continuing with simple ground truth comparison...")
             return None
 
     def test_ground_truth_comparison(self):
         """Test against ground truth for comparison."""
-        print("\n5. Testing against ground truth...")
+        print("\n" + "="*50)
+        print("📝 5. Testing Against Ground Truth")
+        print("="*50)
 
         # Load ground truth
         with open("/app/docs/tech/tech_qa_pairs.json", 'r') as f:
@@ -221,16 +228,16 @@ class RAGPipeline:
             question = qa_pair["question"]
             ground_truth = qa_pair["answer"]
 
-            print(f"\nQuestion: {question}")
-            print(f"Ground Truth: {ground_truth}")
+            print(f"\n❓ Question: {question}")
+            print(f"✅ Ground Truth: {ground_truth}")
 
             # RAG pipeline using evaluator's retrieve method
             contexts = self.evaluator.retrieve_context(question, top_k=2)
             rag_prompt = create_rag_prompt(question, contexts)
             generated_answer = self.llm.generate(rag_prompt)
 
-            print(f"RAG Answer: {generated_answer}")
-            print("-" * 50)
+            print(f"💡 RAG Answer: {generated_answer}")
+            print("  " + "-" * 40)
 
             questions.append(question)
             generated_answers.append(generated_answer)
@@ -239,14 +246,16 @@ class RAGPipeline:
 
 def main():
     try:
-        print("Initializing RAG pipeline with Ollama...")
+        print("\n" + "="*50)
+        print("🚀 Initializing RAG Pipeline with Ollama")
+        print("="*50)
 
         # Get environment variables
         qdrant_host = os.environ.get("QDRANT_HOST", "qdrant")
         ollama_url = os.environ.get("OLLAMA_URL", "http://ollama:11434")
 
-        print(f"Qdrant host: {qdrant_host}")
-        print(f"Ollama URL: {ollama_url}")
+        print(f"🔗 Qdrant host: {qdrant_host}")
+        print(f"🔗 Ollama URL: {ollama_url}")
 
         # Initialize RAG pipeline with integrated evaluator
         rag_pipeline = RAGPipeline(
@@ -273,10 +282,12 @@ def main():
 
         # Run evaluation on ground truth questions too
         if gt_questions and gt_answers:
-            print("\n6. Running RAGAS evaluation on ground truth questions...")
+            print("\n" + "="*50)
+            print("🧮 6. Running RAGAS Evaluation on Ground Truth Questions")
+            print("="*50)
             rag_pipeline.run_evaluation(gt_questions, gt_answers)
 
-        print("\nRAG pipeline test completed successfully!")
+        print("\n✅ RAG pipeline test completed successfully!")
 
     except Exception as e:
         print(f"\n❌ ERROR: {str(e)}")
