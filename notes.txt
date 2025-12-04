@@ -2,4 +2,14 @@ docker build -t llm-rag-arm64-test .
 docker run --rm -v $(pwd)/docs:/app/docs llm-rag-arm64-test python -u services/document_processor.py
 docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant
 --
-docker-compose up --build
+https://www.docker.com/get-started/
+https://docs.github.com/en/get-started/git-basics/set-up-git
+https://github.com/ollama/ollama/blob/main/README.md
+https://ollama.com/library
+
+docker compose up -d ollama
+docker ps
+docker exec <container_id>  ollama pull llama3.2:1b
+docker compose up rag_app
+curl http://localhost:11434/api/tags
+docker compose down
