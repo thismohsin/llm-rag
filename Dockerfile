@@ -31,9 +31,7 @@ RUN pip install --no-cache-dir \
 
 # Install PyTorch and related packages (let pip select the correct wheel for ARM64)
 RUN pip install --no-cache-dir \
-    torch==2.1.0 \
-    torchvision==0.16.0 \
-    torchaudio==2.1.0
+    torch==2.1.0
 
 # Install compatible transformers and sentence-transformers versions
 RUN pip install --no-cache-dir \
