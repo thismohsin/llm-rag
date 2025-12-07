@@ -5,6 +5,11 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
+    entrypoint: >
+      bash -c "
+      (sleep 5 && ollama pull llama3.2:1b) &
+      exec ollama serve
+      "
     networks:
       - rag_network
     environment:

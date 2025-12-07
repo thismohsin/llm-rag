@@ -17,11 +17,16 @@ A demo project for running a Retrieval-Augmented Generation (RAG) pipeline using
    cd llm-rag
    ```
 
-2. **Build the Docker image:**
-   ```sh
-   docker build -t llm-rag-arm64-test .
-   docker images
-   ```
+[//]: # ()
+[//]: # (2. **Build the Docker image:**)
+
+[//]: # (   ```sh)
+
+[//]: # (   docker build -t llm-rag-arm64-test .)
+
+[//]: # (   docker images)
+
+[//]: # (   ```)
 
 3. **Start Ollama service:**
    ```sh
@@ -29,11 +34,15 @@ A demo project for running a Retrieval-Augmented Generation (RAG) pipeline using
    docker ps
    ```
 
-4. **Pull the required LLM model inside the Ollama container:**
-   ```sh
-   docker exec <container_id> ollama pull llama3.2:1b
-   ```
-   Replace `<container_id>` with the actual container ID from `docker ps`.
+[//]: # (4. **Pull the required LLM model inside the Ollama container:**)
+
+[//]: # (   ```sh)
+
+[//]: # (   docker exec <container_id> ollama pull llama3.2:1b)
+
+[//]: # (   ```)
+
+[//]: # (   Replace `<container_id>` with the actual container ID from `docker ps`.)
 
 5. **Start the RAG application:**
    ```sh
