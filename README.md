@@ -73,3 +73,4 @@ A demo project for running a Retrieval-Augmented Generation (RAG) pipeline using
 ---
 
 For troubleshooting, check Docker logs and ensure all services are running. For more details, see the documentation links above.
+

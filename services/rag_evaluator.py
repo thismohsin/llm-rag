@@ -6,10 +6,9 @@ This module evaluates RAG system performance using ground truth QA pairs.
 
 import json
 from typing import List, Dict, Any
-import os
 from pathlib import Path
-import pandas as pd
 import numpy as np
+import difflib
 from langchain_community.llms import Ollama
 from lightweight_embedder import LightweightEmbedder
 from vector_store import QdrantVectorStore
@@ -135,9 +134,6 @@ class RAGEvaluator:
 
     def _enhanced_local_evaluation(self, questions, answers, contexts, ground_truths, model_name):
         """Enhanced local evaluation using Ollama for semantic analysis."""
-        from difflib import SequenceMatcher
-        import re
-
         print("Running enhanced local evaluation metrics...")
 
         relevance_scores = []
@@ -149,7 +145,7 @@ class RAGEvaluator:
             print(f"Evaluating answer {i+1}...")
 
             # 1. Answer Relevancy (string similarity + semantic check)
-            string_similarity = SequenceMatcher(None, answer.lower(), ground_truth.lower()).ratio()
+            string_similarity = difflib.SequenceMatcher(None, answer.lower(), ground_truth.lower()).ratio()
 
             # Enhanced semantic similarity using Ollama
             semantic_score = self._evaluate_semantic_similarity(answer, ground_truth)
@@ -201,10 +197,10 @@ Respond with only a decimal number between 0.0 and 1.0:"""
                 return float(score_match.group())
             else:
                 # Fallback to simple string matching if parsing fails
-                return SequenceMatcher(None, answer.lower(), ground_truth.lower()).ratio()
+                return difflib.SequenceMatcher(None, answer.lower(), ground_truth.lower()).ratio()
         except Exception as e:
             print(f"Semantic similarity evaluation failed: {e}")
-            return SequenceMatcher(None, answer.lower(), ground_truth.lower()).ratio()
+            return difflib.SequenceMatcher(None, answer.lower(), ground_truth.lower()).ratio()
 
     def _evaluate_faithfulness(self, answer: str, contexts: List[str]) -> float:
         """Use Ollama to evaluate how faithful the answer is to the provided contexts."""
@@ -257,9 +253,22 @@ Respond with only a decimal number between 0.0 and 1.0:"""
             return 0.5
 
     def print_results(self, results):
-        """Print evaluation results in a readable format."""
+        """Print evaluation results in a readable format (per-question + averages)."""
         print("\n===== RAG EVALUATION RESULTS =====")
 
+        # Per-question breakdown
+        if all(isinstance(results.get(m), (list, np.ndarray)) for m in [
+            "answer_relevancy", "faithfulness", "context_precision", "semantic_similarity"
+        ]):
+            num_items = max(len(results["answer_relevancy"]), len(results["faithfulness"]), len(results["context_precision"]), len(results["semantic_similarity"]))
+            for i in range(num_items):
+                ar = results["answer_relevancy"][i] if i < len(results["answer_relevancy"]) else None
+                fa = results["faithfulness"][i] if i < len(results["faithfulness"]) else None
+                cp = results["context_precision"][i] if i < len(results["context_precision"]) else None
+                ss = results["semantic_similarity"][i] if i < len(results["semantic_similarity"]) else None
+                print(f"Question {i+1}: answer_relevancy={ar:.4f} faithfulness={fa:.4f} context_precision={cp:.4f} semantic_similarity={ss:.4f}")
+
+        print("\n--- Averages ---")
         for metric in results.keys():
             if metric != "model":
                 if isinstance(results[metric], (list, np.ndarray)):
